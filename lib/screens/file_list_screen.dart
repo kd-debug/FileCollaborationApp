@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import '../providers/file_provider.dart';
 import '../providers/auth_provider.dart';
 import 'file_upload_screen.dart';
@@ -50,6 +52,11 @@ class FileListScreen extends StatelessWidget {
               context.read<AuthProvider>().logout();
             },
           ),
+          IconButton(
+            icon: const Icon(Icons.delete_forever, color: Colors.red),
+            tooltip: 'Clear All Local Data',
+            onPressed: () => _showClearDataDialog(context),
+          ),
         ],
       ),
       body: Consumer<FileProvider>(
@@ -84,6 +91,37 @@ class FileListScreen extends StatelessWidget {
           MaterialPageRoute(builder: (_) => const FileUploadScreen()),
         ),
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+
+  void _showClearDataDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Clear All Data?'),
+        content: const Text('This will permanently delete all users and files from this browser/device. This proves the data was stored locally.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () async {
+              // 1. Clear JSON Database structure
+              await Hive.box('jsonStoreBox').clear();
+              // Re-init with empty structure
+              final initialData = {'users': [], 'files': []};
+              await Hive.box('jsonStoreBox').put('app_database_json', jsonEncode(initialData));
+              
+              if (context.mounted) {
+                Navigator.pop(context);
+                context.read<AuthProvider>().logout();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('All local data cleared!')),
+                );
+              }
+            },
+            child: const Text('Clear Everything', style: TextStyle(color: Colors.red)),
+          ),
+        ],
       ),
     );
   }

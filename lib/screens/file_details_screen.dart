@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:html' as html;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/file_provider.dart';
@@ -7,6 +9,18 @@ import 'package:intl/intl.dart';
 class FileDetailsScreen extends StatelessWidget {
   final String fileId;
   const FileDetailsScreen({super.key, required this.fileId});
+
+  void _downloadFile(dynamic file) {
+    // Simulate downloading the file by creating a mock blob
+    final content = 'File Name: ${file.name}\nType: ${file.type}\nDescription: ${file.description}\nOwner: ${file.ownerUsername}\nVersions: ${file.versions.length}';
+    final bytes = utf8.encode(content);
+    final blob = html.Blob([bytes]);
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    final anchor = html.AnchorElement(href: url)
+      ..setAttribute('download', 'downloaded_${file.name}.txt')
+      ..click();
+    html.Url.revokeObjectUrl(url);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +45,9 @@ class FileDetailsScreen extends StatelessWidget {
       body: Consumer<FileProvider>(
         builder: (context, provider, _) {
           final file = provider.files.firstWhere((f) => f.id == fileId);
+          final authProvider = context.read<AuthProvider>();
+          final isOwner = file.ownerUsername == authProvider.currentUser?.username;
+
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -46,13 +63,24 @@ class FileDetailsScreen extends StatelessWidget {
                     style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
                 ],
                 const SizedBox(height: 12),
+                if (isOwner) 
+                  ElevatedButton.icon(
+                    onPressed: () => _showShareNearbyDialog(context, provider, fileId),
+                    icon: const Icon(Icons.near_me),
+                    label: const Text('Share via Nearby'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green.shade50, 
+                      foregroundColor: Colors.green
+                    ),
+                  ),
+                const SizedBox(height: 8),
                 ElevatedButton.icon(
-                  onPressed: () => _showShareNearbyDialog(context, provider, fileId),
-                  icon: const Icon(Icons.near_me),
-                  label: const Text('Share via Nearby'),
+                  onPressed: () => _downloadFile(file),
+                  icon: const Icon(Icons.download),
+                  label: const Text('Download Shared File'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green.shade50, 
-                    foregroundColor: Colors.green
+                    backgroundColor: Colors.blue.shade50,
+                    foregroundColor: Colors.blue,
                   ),
                 ),
                 const Divider(height: 32),

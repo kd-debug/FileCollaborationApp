@@ -1,0 +1,123 @@
+{
+  "users": [
+    {
+      "id": null,
+      "username": "shreya",
+      "password": "12345678"
+    },
+    {
+      "id": null,
+      "username": "khushali",
+      "password": "12345678"
+    },
+    {
+      "id": null,
+      "username": "xyz",
+      "password": "123456"
+    }
+  ],
+  "files": [
+    {
+      "id": "f6aaecfa-c2ea-4dde-8e24-27d1885c7151",
+      "name": "data",
+      "type": "PDF",
+      "description": "records",
+      "ownerUsername": "shreya",
+      "isShared": false,
+      "versions": [
+        {
+          "versionNumber": 1,
+          "timestamp": "2026-05-06T11:47:22.066"
+        }
+      ],
+      "comments": [],
+      "sharedWith": [],
+      "updatedAt": "2026-05-06T11:47:22.066"
+    },
+    {
+      "id": "8234e81e-b796-4f30-b28a-08f8782cd761",
+      "name": "data",
+      "type": "Doc",
+      "description": "records",
+      "ownerUsername": "khushali",
+      "isShared": false,
+      "versions": [
+        {
+          "versionNumber": 1,
+          "timestamp": "2026-05-06T11:49:52.938"
+        }
+      ],
+      "comments": [],
+      "sharedWith": [],
+      "updatedAt": "2026-05-06T11:49:52.938"
+    },
+    {
+      "id": "6e061967-2060-4fdd-9b6e-5f8cb2e1f3df",
+      "name": "img",
+      "type": "Image",
+      "description": "sdhj",
+      "ownerUsername": "xyz",
+      "isShared": true,
+      "versions": [
+        {
+          "versionNumber": 1,
+          "timestamp": "2026-05-06T11:51:54.086"
+        }
+      ],
+      "comments": [
+        {
+          "id": "4a992342-1591-44c2-986d-d49a3c337e9a",
+          "text": "i got this",
+          "timestamp": "2026-05-06T11:53:09.588"
+        }
+      ],
+      "sharedWith": [
+        "khushali"
+      ],
+      "updatedAt": "2026-05-06T11:53:09.588"
+    },
+    {
+      "id": "cefa9f19-7dc6-4bd0-86aa-a8b5f36d39bb",
+      "name": "data_new",
+      "type": "PDF",
+      "description": "records",
+      "ownerUsername": "shreya",
+      "isShared": true,
+      "versions": [
+        {
+          "versionNumber": 1,
+          "timestamp": "2026-05-06T11:55:39.698"
+        },
+        {
+          "versionNumber": 2,
+          "timestamp": "2026-05-06T11:58:11.482"
+        }
+      ],
+      "comments": [],
+      "sharedWith": [
+        "xyz"
+      ],
+      "updatedAt": "2026-05-06T11:58:11.482"
+    },
+    {
+      "id": "09b9c7ab-d98c-482d-9c71-e2e01c16a6b5",
+      "name": "FSCM.pdf",
+      "type": "PDF",
+      "description": "file",
+      "ownerUsername": "khushali",
+      "isShared": true,
+      "versions": [
+        {
+          "versionNumber": 1,
+          "timestamp": "2026-05-06T12:04:56.209"
+        }
+      ],
+      "comments": [],
+      "sharedWith": [
+        "shreya"
+      ],
+      "updatedAt": "2026-05-06T12:04:56.209"
+    }
+  ],
+  "last_updated": "2026-05-06T11:58:14.435"
+}
