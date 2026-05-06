@@ -2,35 +2,47 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../models/user_model.dart';
 
 class DatabaseService {
-  static const String _boxName = 'usersBox';
+  static const String _boxName = 'usersBoxV2'; // V2 to distinguish from previous attempts
 
   Future<void> init() async {
     await Hive.openBox(_boxName);
   }
 
-  Future<void> registerUser(UserModel user) async {
+  Future<void> clearAllData() async {
+    final box = Hive.box(_boxName);
+    await box.clear();
+  }
+
+  Future<int> registerUser(UserModel user) async {
     final box = Hive.box(_boxName);
     
     // Check if username already exists
-    final exists = box.values.any((u) => u['username'] == user.username);
+    final exists = box.values.any((u) {
+      final map = Map<String, dynamic>.from(u);
+      return map['username'] == user.username;
+    });
+
     if (exists) {
       throw Exception("Username already exists");
     }
 
-    // Generate a simple ID
     final id = box.length + 1;
     await box.put(id, {
       'id': id,
       'username': user.username,
       'password': user.password,
     });
+    return id;
   }
 
   Future<UserModel?> loginUser(String username, String password) async {
     final box = Hive.box(_boxName);
     try {
       final userData = box.values.firstWhere(
-        (u) => u['username'] == username && u['password'] == password,
+        (u) {
+          final map = Map<String, dynamic>.from(u);
+          return map['username'] == username && map['password'] == password;
+        },
         orElse: () => null,
       );
 

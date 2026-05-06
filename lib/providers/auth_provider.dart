@@ -38,7 +38,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<List<UserModel>> getOtherUsers() async {
     final allUsers = await _dbService.getAllUsers();
-    // Return all users except the current one for sharing simulation
-    return allUsers.where((u) => u.id != _currentUser?.id).toList();
+    // Compare by username to exclude current user
+    return allUsers.where((u) => u.username != _currentUser?.username).toList();
   }
 }

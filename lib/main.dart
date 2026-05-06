@@ -13,7 +13,6 @@ void main() async {
   try {
     await Hive.initFlutter();
     
-    // Initialize Auth Database Service
     final dbService = DatabaseService();
     await dbService.init();
 
@@ -24,7 +23,13 @@ void main() async {
       MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => AuthProvider()),
-          ChangeNotifierProvider.value(value: fileProvider),
+          ChangeNotifierProxyProvider<AuthProvider, FileProvider>(
+            create: (_) => fileProvider,
+            update: (_, auth, file) {
+              file!.setCurrentUser(auth.currentUser?.username);
+              return file;
+            },
+          ),
         ],
         child: const MyApp(),
       ),

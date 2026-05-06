@@ -9,9 +9,20 @@ class FileProvider with ChangeNotifier {
   String _searchQuery = '';
   String _selectedType = 'All';
   bool _showOnlyShared = false;
+  String? _currentUsername;
+
+  void setCurrentUser(String? username) {
+    _currentUsername = username;
+    notifyListeners();
+  }
 
   List<FileModel> get files {
-    List<FileModel> filtered = _files;
+    if (_currentUsername == null) return [];
+
+    // Filter: User owns the file OR file is shared with the user
+    List<FileModel> filtered = _files.where((f) {
+      return f.ownerUsername == _currentUsername || f.sharedWith.contains(_currentUsername!);
+    }).toList();
 
     if (_searchQuery.isNotEmpty) {
       filtered = filtered
@@ -30,7 +41,10 @@ class FileProvider with ChangeNotifier {
     return filtered;
   }
 
-  List<FileModel> get sharedFiles => _files.where((f) => f.isShared).toList();
+  List<FileModel> get sharedFiles {
+     if (_currentUsername == null) return [];
+     return _files.where((f) => f.sharedWith.contains(_currentUsername!)).toList();
+  }
 
   String get searchQuery => _searchQuery;
   String get selectedType => _selectedType;
@@ -66,6 +80,8 @@ class FileProvider with ChangeNotifier {
   }
 
   Future<void> addFile(String name, String type, String description) async {
+    if (_currentUsername == null) return;
+    
     final id = const Uuid().v4();
     final now = DateTime.now();
     final newFile = FileModel(
@@ -73,8 +89,10 @@ class FileProvider with ChangeNotifier {
       name: name,
       type: type,
       description: description,
+      ownerUsername: _currentUsername!,
       versions: [FileVersion(versionNumber: 1, timestamp: now)],
       comments: [],
+      sharedWith: [],
       updatedAt: now,
     );
 
@@ -116,7 +134,6 @@ class FileProvider with ChangeNotifier {
     }
   }
 
-  // Simulation: Share with a specific user via "Local/Nearby"
   Future<void> shareWithUser(String fileId, String userName) async {
     final index = _files.indexWhere((f) => f.id == fileId);
     if (index != -1) {

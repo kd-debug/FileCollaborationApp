@@ -57,10 +57,11 @@ class FileModel {
   final String name;
   final String type;
   final String description;
+  final String ownerUsername; // Added field
   final bool isShared;
   final List<FileVersion> versions;
   final List<FileComment> comments;
-  final List<String> sharedWith; // Simulation: List of user names
+  final List<String> sharedWith;
   final DateTime updatedAt;
 
   FileModel({
@@ -68,6 +69,7 @@ class FileModel {
     required this.name,
     required this.type,
     required this.description,
+    required this.ownerUsername, // Added field
     this.isShared = false,
     required this.versions,
     required this.comments,
@@ -81,6 +83,7 @@ class FileModel {
     String? name,
     String? type,
     String? description,
+    String? ownerUsername,
     bool? isShared,
     List<FileVersion>? versions,
     List<FileComment>? comments,
@@ -92,6 +95,7 @@ class FileModel {
       name: name ?? this.name,
       type: type ?? this.type,
       description: description ?? this.description,
+      ownerUsername: ownerUsername ?? this.ownerUsername,
       isShared: isShared ?? this.isShared,
       versions: versions ?? this.versions,
       comments: comments ?? this.comments,
@@ -106,6 +110,7 @@ class FileModel {
       'name': name,
       'type': type,
       'description': description,
+      'ownerUsername': ownerUsername,
       'isShared': isShared,
       'versions': versions.map((x) => x.toMap()).toList(),
       'comments': comments.map((x) => x.toMap()).toList(),
@@ -120,6 +125,7 @@ class FileModel {
       name: map['name'],
       type: map['type'],
       description: map['description'],
+      ownerUsername: map['ownerUsername'] ?? 'unknown',
       isShared: map['isShared'] ?? false,
       versions: List<FileVersion>.from(
           map['versions']?.map((x) => FileVersion.fromMap(Map<String, dynamic>.from(x))) ?? []),
